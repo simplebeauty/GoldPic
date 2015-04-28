@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme" parent="@style/NavigationDrawer">
+        <!-- 底部导航栏颜色 -->
+        <item name="android:navigationBarColor">@color/accent_material_light</item>
+    </style>
+
+
+</resources>

@@ -1,0 +1,35 @@
+<resources>
+
+
+    <style name="AppBaseTheme" parent="Theme.AppCompat">
+
+
+        <item name="colorPrimary">@color/primary</item>
+        <!-- 状态栏颜色 -->
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+
+        <item name="colorAccent">@color/accent</item>
+
+    </style>
+
+    <style name="AppTheme" parent="@style/AppBaseTheme"></style>
+
+    <style name="MySearchViewStyle" parent="Widget.AppCompat.SearchView"/>
+
+    <style name="MaterialNavigationDrawerTheme.Light.DarkActionBar" parent="Theme.AppCompat.Light.NoActionBar" >
+        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="popupTheme">@style/Base.V21.Theme.AppCompat.Light.Dialog</item>
+    </style>
+
+    <style name="MaterialNavigationDrawerTheme.Light.DarkActionBar.TranslucentKitKatStatusBar" parent="MaterialNavigationDrawerTheme.Light.DarkActionBar" />
+
+    <style name="NavigationDrawer" parent="MaterialNavigationDrawerTheme.Light.DarkActionBar.TranslucentKitKatStatusBar">
+        <!-- Customize your theme here. -->
+
+        <item name="colorPrimary">@color/primary</item>
+        <!-- 状态栏颜色 -->
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+
+        <item name="colorAccent">@color/accent</item>
+    </style>
+</resources>
