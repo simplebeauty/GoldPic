@@ -1,40 +1,32 @@
 package com.hustascii.goldpic.fragments;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.hustascii.goldpic.R;
+import com.hustascii.goldpic.adapter.HomeAdapter;
+import com.hustascii.goldpic.beans.Picture;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link HotPageFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link HotPageFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+
+
 public class HotPageFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HotPageFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HotPageFragment newInstance(String param1, String param2) {
-        HotPageFragment fragment = new HotPageFragment();
 
-        return fragment;
-    }
+    private ListView mListView;
+    private HomeAdapter homeAdapter;
+    private ArrayList<Picture> mList;
+    private ImageLoader mImageLoader;
+
+
 
     public HotPageFragment() {
         // Required empty public constructor
@@ -43,13 +35,35 @@ public class HotPageFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mList = new ArrayList<Picture>();
+
+
     }
 
+
+    private void getData(){
+        for(int i=0; i<10 ; i++){
+            Picture pic = new Picture();
+            mList.add(pic);
+        }
+        homeAdapter.notifyDataSetChanged();
+
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_hot_page, container, false);
+        super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_hot_page, null, false);
+        mListView = (ListView)view.findViewById(R.id.piclist);
+        mImageLoader = ImageLoader.getInstance();
+
+        mListView.setOnScrollListener(new PauseOnScrollListener(mImageLoader,false, false));
+        homeAdapter = new HomeAdapter(getActivity(),mList);
+
+        mListView.setAdapter(homeAdapter);
+        getData();
+        return view;
     }
 
 

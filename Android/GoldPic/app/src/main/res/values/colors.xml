@@ -6,4 +6,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="black_20">#33000000</color>
     <color name="transparent">#00000000</color>
+    <color name="textColor">#999999</color>
+    <color name="btnFocusColor">#BBB</color>
 </resources>

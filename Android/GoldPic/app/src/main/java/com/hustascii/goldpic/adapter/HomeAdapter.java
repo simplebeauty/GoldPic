@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.hustascii.goldpic.R;
 import com.hustascii.goldpic.beans.Picture;
+import com.hustascii.goldpic.util.AnimateFirstDisplayListener;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
@@ -84,9 +85,20 @@ public class HomeAdapter extends BaseAdapter{
 
         ViewHolder viewHolder;
         if(view == null){
-//            view = mInflater.inflate(R.)
+            view = mInflater.inflate(R.layout.pic_item,null);
+            viewHolder = new ViewHolder();
+            viewHolder.mImg = (ImageView)view.findViewById(R.id.list_img);
+        }else{
+            viewHolder = (ViewHolder)view.getTag();
         }
-        return null;
+
+        final Picture picture = mList.get(i);
+        if(!mBusy){
+            //mImageLoader.displayImage("http://yuedu.fm/static/file/large/4c2e43a1db5fd89a2563eba7249ebc54",viewHolder.mImg,options,new AnimateFirstDisplayListener());
+        }else{
+            mImageLoader.displayImage("http://yuedu.fm/static/file/large/4c2e43a1db5fd89a2563eba7249ebc54",viewHolder.mImg,options);
+        }
+        return view;
     }
 
     public final class ViewHolder{

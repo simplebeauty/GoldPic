@@ -1,3 +1,5 @@
+package com.hustascii.goldpic;
+
 import android.app.Application;
 
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;

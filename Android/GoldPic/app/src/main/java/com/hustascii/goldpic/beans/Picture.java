@@ -29,4 +29,9 @@ public class Picture implements Serializable {
     public void setLikeCount(int likeCount) {
         this.likeCount = likeCount;
     }
+
+    public Picture() {
+        this.pic_url = "";
+        this.likeCount = 0;
+    }
 }
