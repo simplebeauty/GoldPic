@@ -94,7 +94,10 @@ public class HomeAdapter extends BaseAdapter{
 
         final Picture picture = mList.get(i);
         if(!mBusy){
-            //mImageLoader.displayImage("http://yuedu.fm/static/file/large/4c2e43a1db5fd89a2563eba7249ebc54",viewHolder.mImg,options,new AnimateFirstDisplayListener());
+            if(mImageLoader!=null) {
+                mImageLoader
+                        .displayImage("http://edu.china.unity3d.com/uploads/assets/image/20141114/20141114173828_74628.jpg", viewHolder.mImg, options, new AnimateFirstDisplayListener());
+            }
         }else{
             mImageLoader.displayImage("http://yuedu.fm/static/file/large/4c2e43a1db5fd89a2563eba7249ebc54",viewHolder.mImg,options);
         }
@@ -107,7 +110,6 @@ public class HomeAdapter extends BaseAdapter{
         public TextView likeCountText;
         public Button shareBtn;
         public Button collectBtn;
-
     }
 
 }

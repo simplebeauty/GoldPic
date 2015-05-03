@@ -2,6 +2,7 @@ package com.hustascii.goldpic;
 
 import android.app.Application;
 
+import com.hustascii.goldpic.util.AVService;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -31,6 +32,8 @@ public class MyApp extends Application{
 
         //Initialize ImageLoader with configuration
         ImageLoader.getInstance().init(config);
+
+        AVService.AVinit(this);
 
     }
 }

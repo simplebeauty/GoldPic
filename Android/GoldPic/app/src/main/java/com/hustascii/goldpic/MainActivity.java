@@ -1,5 +1,6 @@
 package com.hustascii.goldpic;
 
+import android.app.ProgressDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -9,9 +10,14 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.FindCallback;
 import com.hustascii.goldpic.fragments.CollectPageFragment;
 import com.hustascii.goldpic.fragments.HotPageFragment;
 import com.hustascii.goldpic.fragments.NewPageFragment;
@@ -25,40 +31,43 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class MainActivity extends ActionBarActivity {
-
-
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private ViewPager pager;
-
     private Button contentTypeBtn;
     private Button emotionTypeBtn;
-
     private ListView typeList;
+    private ArrayAdapter<String> typeAdapter;
+    private ProgressDialog progressDialog;
 
-
+    private ArrayList<String> mList;
+    private String[] contentType = {"全部","電影","電視劇","電影","電視劇","電影","電視劇","電影","電視劇","電影","電視劇"};
+    private String[] emotionType = {"全部","高興","悲傷","高興","悲傷","高興","悲傷","高興","悲傷","高興","悲傷"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setMessage("initial...");
+        progressDialog.show();
 
         mToolbar = (Toolbar)findViewById(R.id.toolbar);
-
         mToolbar.setTitle("神配圖");
-
         setSupportActionBar(mToolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		/* findView */
-
+        mList = new ArrayList<String>();
+        typeAdapter = new ArrayAdapter<String>(this,R.layout.type_item,R.id.type_text,mList);
         initPages();
-
         initDrawer();
-
     }
 
 
@@ -68,8 +77,6 @@ public class MainActivity extends ActionBarActivity {
                 R.string.drawer_open);
         mDrawerToggle.syncState();
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-
         FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(
                 getSupportFragmentManager(), FragmentPagerItems.with(this)
                 .add(R.string.hot_page, HotPageFragment.class)
@@ -78,7 +85,6 @@ public class MainActivity extends ActionBarActivity {
                 .create());
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(adapter);
-
         SmartTabLayout viewPagerTab = (SmartTabLayout) findViewById(R.id.viewpagertab);
         viewPagerTab.setViewPager(viewPager);
     }
@@ -88,11 +94,8 @@ public class MainActivity extends ActionBarActivity {
         contentTypeBtn = (Button)findViewById(R.id.content_type_btn);
         emotionTypeBtn = (Button)findViewById(R.id.emotion_type_btn);
         typeList = (ListView)findViewById(R.id.list_type);
-        String[] contentType = {"全部","電影","電視劇","電影","電視劇","電影","電視劇","電影","電視劇","電影","電視劇"};
-        String[] emotionType = {"全部","高興","悲傷","高興","悲傷","高興","悲傷","高興","悲傷","高興","悲傷"};
-
-        typeList.setAdapter(new ArrayAdapter<String>(this,R.layout.type_item,R.id.type_text,contentType));
-
+        typeList.setAdapter(typeAdapter);
+        getContentType();
 
     }
     @Override
@@ -108,15 +111,33 @@ public class MainActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
 
+    private void getContentType(){
+        AVQuery<AVObject> query = new AVQuery<AVObject>("ContentType");
+        //final ArrayList<String> result = null;
+        query.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> avObjects, AVException e) {
+
+                progressDialog.dismiss();
+                if(e == null){
+                    for(AVObject object:avObjects){
+                        mList.add(object.getString("name"));
+                    }
+                }else{
+                    Log.v("failed", "error:" + e.getMessage());
+                }
+                typeAdapter.notifyDataSetChanged();
+            }
+        });
+
+    }
 
 }
