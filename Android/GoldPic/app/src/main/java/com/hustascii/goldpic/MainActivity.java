@@ -27,15 +27,17 @@ import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Switch;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements View.OnClickListener{
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -46,9 +48,10 @@ public class MainActivity extends ActionBarActivity {
     private ArrayAdapter<String> typeAdapter;
     private ProgressDialog progressDialog;
 
+
     private ArrayList<String> mList;
-    private String[] contentType = {"全部","電影","電視劇","電影","電視劇","電影","電視劇","電影","電視劇","電影","電視劇"};
-    private String[] emotionType = {"全部","高興","悲傷","高興","悲傷","高興","悲傷","高興","悲傷","高興","悲傷"};
+    private ArrayList<String> contentType;
+    private ArrayList<String> emotionType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,11 +68,13 @@ public class MainActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		/* findView */
         mList = new ArrayList<String>();
+        contentType = new ArrayList<String>();
+        emotionType = new ArrayList<String>();
+
         typeAdapter = new ArrayAdapter<String>(this,R.layout.type_item,R.id.type_text,mList);
         initPages();
         initDrawer();
     }
-
 
     private void initPages(){
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
@@ -89,15 +94,16 @@ public class MainActivity extends ActionBarActivity {
         viewPagerTab.setViewPager(viewPager);
     }
 
-
     private void initDrawer(){
         contentTypeBtn = (Button)findViewById(R.id.content_type_btn);
         emotionTypeBtn = (Button)findViewById(R.id.emotion_type_btn);
+        contentTypeBtn.setOnClickListener(this);
+        emotionTypeBtn.setOnClickListener(this);
         typeList = (ListView)findViewById(R.id.list_type);
         typeList.setAdapter(typeAdapter);
         getContentType();
-
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -118,17 +124,18 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     private void getContentType(){
         AVQuery<AVObject> query = new AVQuery<AVObject>("ContentType");
-        //final ArrayList<String> result = null;
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> avObjects, AVException e) {
 
                 progressDialog.dismiss();
+                mList.clear();
+                contentType.clear();
                 if(e == null){
                     for(AVObject object:avObjects){
+                        contentType.add(object.getString("name"));
                         mList.add(object.getString("name"));
                     }
                 }else{
@@ -137,7 +144,53 @@ public class MainActivity extends ActionBarActivity {
                 typeAdapter.notifyDataSetChanged();
             }
         });
-
     }
 
+    private void getEmotionType(){
+        AVQuery<AVObject> query = new AVQuery<AVObject>("EmotionType");
+        query.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> avObjects, AVException e) {
+
+                progressDialog.dismiss();
+                mList.clear();
+                emotionType.clear();
+                if(e == null){
+                    for(AVObject object:avObjects){
+                        emotionType.add(object.getString("name"));
+
+                        mList.add(object.getString("name"));
+                    }
+                }else{
+                    Log.v("failed", "error:" + e.getMessage());
+                }
+                typeAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+
+    @Override
+    public void onClick(View view) {
+        switch(view.getId()){
+            case R.id.content_type_btn:
+                if(contentType.isEmpty()){
+                   getContentType();
+                }else{
+                    mList.clear();
+                    mList.addAll(contentType);
+                    typeAdapter.notifyDataSetChanged();
+                }
+                break;
+            case R.id.emotion_type_btn:
+                if(emotionType.isEmpty()){
+                    getEmotionType();
+                }else{
+                    mList.clear();
+                    mList.addAll(emotionType);
+                    typeAdapter.notifyDataSetChanged();
+                }
+                break;
+        }
+    }
 }
