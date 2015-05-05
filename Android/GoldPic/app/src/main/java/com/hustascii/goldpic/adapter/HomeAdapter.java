@@ -2,6 +2,7 @@ package com.hustascii.goldpic.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hustascii.goldpic.R;
@@ -35,7 +37,6 @@ public class HomeAdapter extends BaseAdapter{
     private Context mContext;
 
 
-
     private boolean mBusy = false;
     public void setFlagBusy(boolean busy){
         this.mBusy = busy;
@@ -44,10 +45,10 @@ public class HomeAdapter extends BaseAdapter{
 
     public HomeAdapter(Context context,ArrayList<Picture> list){
         this.mInflater = LayoutInflater.from(context);
-//        this.mList = list;
         this.mList = list;
         this.mContext = context;
         this.mImageLoader = ImageLoader.getInstance();
+
         options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.example_1) //设置图片在下载期间显示的图片
                 .showImageForEmptyUri(R.drawable.example_1)//设置图片Uri为空或是错误的时候显示的图片
@@ -83,18 +84,52 @@ public class HomeAdapter extends BaseAdapter{
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
 
-        ViewHolder viewHolder;
+        final ViewHolder viewHolder;
         if(view == null){
             view = mInflater.inflate(R.layout.pic_item,null);
             viewHolder = new ViewHolder();
             viewHolder.mImg = (ImageView)view.findViewById(R.id.list_img);
+            viewHolder.likeImg = (ImageView)view.findViewById(R.id.like_img);
+            viewHolder.collectImg = (ImageView)view.findViewById(R.id.collect_img);
+
+            viewHolder.likeBtn = (RelativeLayout)view.findViewById(R.id.like_btn);
+            viewHolder.collectBtn = (RelativeLayout)view.findViewById(R.id.collect_btn);
+            viewHolder.shareBtn = (RelativeLayout)view.findViewById(R.id.share_btn);
+
+
+
+            viewHolder.likeBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    viewHolder.likeImg.setImageResource(R.drawable.icon_like_selected);
+                }
+            });
+
+            viewHolder.collectBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    viewHolder.collectImg.setImageResource(R.drawable.icon_favorite_selected);
+                }
+            });
+
+            viewHolder.shareBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+
+
+            view.setTag(viewHolder);
         }else{
             viewHolder = (ViewHolder)view.getTag();
+
         }
 
         final Picture picture = mList.get(i);
         if(!mBusy){
-            if(mImageLoader!=null) {
+            if(viewHolder.mImg!=null) {
+
                 mImageLoader
                         .displayImage("http://edu.china.unity3d.com/uploads/assets/image/20141114/20141114173828_74628.jpg", viewHolder.mImg, options, new AnimateFirstDisplayListener());
             }
@@ -106,10 +141,12 @@ public class HomeAdapter extends BaseAdapter{
 
     public final class ViewHolder{
         public ImageView mImg;
-        public ImageButton likeBtn;
+        public RelativeLayout likeBtn;
         public TextView likeCountText;
-        public Button shareBtn;
-        public Button collectBtn;
+        public RelativeLayout shareBtn;
+        public RelativeLayout collectBtn;
+        public ImageView likeImg;
+        public ImageView collectImg;
     }
 
 }

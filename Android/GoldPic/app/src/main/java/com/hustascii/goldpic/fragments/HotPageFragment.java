@@ -57,8 +57,8 @@ public class HotPageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_hot_page, null, false);
         mListView = (ListView)view.findViewById(R.id.piclist);
         mImageLoader = ImageLoader.getInstance();
-
         mListView.setOnScrollListener(new PauseOnScrollListener(mImageLoader,false, false));
+
         homeAdapter = new HomeAdapter(getActivity(),mList);
 
         mListView.setAdapter(homeAdapter);

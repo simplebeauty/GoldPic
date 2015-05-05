@@ -28,6 +28,7 @@
         android:dividerPadding="1dp">
 
         <RelativeLayout
+            android:id="@+id/like_btn"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -42,6 +43,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/like_img"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -49,7 +51,7 @@
                     android:src="@drawable/icon_like_normal" />
 
                 <TextView
-                    android:id="@+id/author"
+                    android:id="@+id/like_num"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -64,6 +66,7 @@
 
 
         <RelativeLayout
+            android:id="@+id/collect_btn"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -78,6 +81,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/collect_img"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -97,6 +101,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/share_btn"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"

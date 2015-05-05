@@ -38,11 +38,9 @@ dependencies {
     //    //Optional: see how to use the utility.
     //    compile 'com.ogaclejapan.smarttablayout:utils-v13:1.1.2@aar'
     compile files('libs/universal-image-loader-1.9.3.jar')
-
     compile 'com.android.support:support-v4:22.0.3'
-
     //avoscloud-sdk 为 LeanCloud基础包
     compile 'cn.leancloud.android:avoscloud-sdk:v2.7+'
 
-    compile 'com.pnikosis:materialish-progress:1.5'
+
 }
