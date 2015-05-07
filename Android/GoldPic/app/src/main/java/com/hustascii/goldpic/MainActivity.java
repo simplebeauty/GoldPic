@@ -59,7 +59,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         progressDialog = new ProgressDialog(this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.setMessage("initial...");
+        progressDialog.setMessage("初始化中...");
         progressDialog.show();
 
         mToolbar = (Toolbar)findViewById(R.id.toolbar);

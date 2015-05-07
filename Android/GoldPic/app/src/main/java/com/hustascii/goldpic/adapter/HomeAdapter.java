@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVQuery;
 import com.hustascii.goldpic.R;
 import com.hustascii.goldpic.beans.Picture;
 import com.hustascii.goldpic.util.AnimateFirstDisplayListener;
@@ -66,6 +67,8 @@ public class HomeAdapter extends BaseAdapter{
                 .displayer(new FadeInBitmapDisplayer(100))//是否图片加载好后渐入的动画时间
                 .build();//构建完成
     }
+
+
     @Override
     public int getCount() {
         return mList.size();
@@ -95,6 +98,14 @@ public class HomeAdapter extends BaseAdapter{
             viewHolder.likeBtn = (RelativeLayout)view.findViewById(R.id.like_btn);
             viewHolder.collectBtn = (RelativeLayout)view.findViewById(R.id.collect_btn);
             viewHolder.shareBtn = (RelativeLayout)view.findViewById(R.id.share_btn);
+
+
+
+
+
+
+
+
 
 
 
