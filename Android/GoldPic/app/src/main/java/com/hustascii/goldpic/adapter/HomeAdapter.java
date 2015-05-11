@@ -97,10 +97,12 @@ public class HomeAdapter extends BaseAdapter{
             viewHolder.shareBtn = (RelativeLayout)view.findViewById(R.id.share_btn);
 
 
+            final Picture picture = mList.get(i);
 
             viewHolder.likeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
                     viewHolder.likeImg.setImageResource(R.drawable.icon_like_selected);
                 }
             });
@@ -118,15 +120,12 @@ public class HomeAdapter extends BaseAdapter{
 
                 }
             });
-
-
             view.setTag(viewHolder);
         }else{
             viewHolder = (ViewHolder)view.getTag();
-
         }
 
-        final Picture picture = mList.get(i);
+
         if(!mBusy){
             if(viewHolder.mImg!=null) {
 

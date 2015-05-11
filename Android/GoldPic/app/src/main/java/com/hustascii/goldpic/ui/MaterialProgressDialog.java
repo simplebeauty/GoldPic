@@ -24,6 +24,7 @@ public class MaterialProgressDialog extends ProgressDialog {
 // TODO Auto-generated constructor stub
         init();
     }
+
     private void init() {
         setCanceledOnTouchOutside(false);
         setCancelable(true);
@@ -31,9 +32,11 @@ public class MaterialProgressDialog extends ProgressDialog {
                 R.layout.material_progress_dialog, null);
         mProgressWheel = (ProgressWheel) view.findViewById(R.id.progress_wheel);
     }
+
     public void setBarColor(int barColor) {
         mProgressWheel.setBarColor(barColor);
     }
+
     public void setRimColor(int rimColor) {
         mProgressWheel.setRimColor(rimColor);
     }

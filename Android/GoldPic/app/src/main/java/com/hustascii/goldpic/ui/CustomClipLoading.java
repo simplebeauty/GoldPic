@@ -42,6 +42,7 @@ public class CustomClipLoading extends FrameLayout {
 			if (msg.what == 0x123) {
 				mClipDrawable.setLevel(mProgress);
 			}
+
 		}
 	};
 

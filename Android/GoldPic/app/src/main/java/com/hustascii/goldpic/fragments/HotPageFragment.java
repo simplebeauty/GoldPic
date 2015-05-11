@@ -36,10 +36,7 @@ public class HotPageFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mList = new ArrayList<Picture>();
-
-
     }
-
 
     private void getData(){
         for(int i=0; i<10 ; i++){
@@ -49,6 +46,7 @@ public class HotPageFragment extends Fragment {
         homeAdapter.notifyDataSetChanged();
 
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
