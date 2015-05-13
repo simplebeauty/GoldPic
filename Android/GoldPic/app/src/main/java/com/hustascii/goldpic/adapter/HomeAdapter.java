@@ -22,6 +22,8 @@ import com.avos.avoscloud.SaveCallback;
 import com.hustascii.goldpic.R;
 import com.hustascii.goldpic.beans.CollectList;
 import com.hustascii.goldpic.beans.CollectListDB;
+import com.hustascii.goldpic.beans.LikeList;
+import com.hustascii.goldpic.beans.LikeListDB;
 import com.hustascii.goldpic.beans.Picture;
 import com.hustascii.goldpic.util.AnimateFirstDisplayListener;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -102,6 +104,8 @@ public class HomeAdapter extends BaseAdapter{
         final AVObject picture = mList.get(i);
 
         final CollectListDB db = new CollectListDB(mContext);
+        final LikeListDB likedb = new LikeListDB(mContext);
+
         if(view == null){
             view = mInflater.inflate(R.layout.pic_item,null);
             viewHolder = new ViewHolder();
@@ -119,24 +123,51 @@ public class HomeAdapter extends BaseAdapter{
                 viewHolder.collectImg.setImageResource(R.drawable.icon_favorite_selected);
             }
 
+            if(likedb.is_exist(picture.getObjectId())){
+                viewHolder.likeImg.setImageResource(R.drawable.icon_like_selected);
+            }
+
 
             viewHolder.likeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if (!likedb.is_exist(picture.getObjectId())) {
 
-                    viewHolder.likeImg.setImageResource(R.drawable.icon_like_selected);
-                    picture.setFetchWhenSave(true);
-                    picture.increment("likeCount");
-                    picture.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(AVException e) {
-                            if(e == null){
-                                viewHolder.likeCountText.setText(String.valueOf(picture.getInt("likeCount")));
-                            }else{
-                                Toast.makeText(mContext,"点赞失败",Toast.LENGTH_LONG);
+                        picture.setFetchWhenSave(true);
+
+                        picture.increment("likeCount");
+                        picture.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(AVException e) {
+                                if (e == null) {
+                                    viewHolder.likeImg.setImageResource(R.drawable.icon_like_selected);
+                                    viewHolder.likeCountText.setText(String.valueOf(picture.getInt("likeCount")));
+                                    LikeList like = new LikeList();
+                                    like.setPic_id(picture.getObjectId());
+                                    likedb.add(like);
+                                } else {
+                                    Toast.makeText(mContext, "点赞失败", Toast.LENGTH_SHORT);
+                                }
                             }
-                        }
-                    });
+                        });
+                    }else{
+
+                        picture.setFetchWhenSave(true);
+                        picture.increment("likeCount",-1);
+                       
+                        picture.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(AVException e) {
+                                if (e == null) {
+                                    likedb.delete(picture.getObjectId());
+                                    viewHolder.likeImg.setImageResource(R.drawable.icon_like_normal);
+                                    viewHolder.likeCountText.setText(String.valueOf(picture.getInt("likeCount")));
+                                } else {
+                                    Toast.makeText(mContext, "取消失败", Toast.LENGTH_SHORT);
+                                }
+                            }
+                        });
+                    }
                 }
             });
 
@@ -180,6 +211,7 @@ public class HomeAdapter extends BaseAdapter{
         }else{
             mImageLoader.displayImage(imgUrl,viewHolder.mImg,options);
         }
+        //db.releaseDataHelper();
         return view;
     }
 

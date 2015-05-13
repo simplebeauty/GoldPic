@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.avos.avoscloud.AVCloudQueryResult;
 import com.avos.avoscloud.AVException;
@@ -61,6 +62,11 @@ public abstract class PageFragment extends Fragment{
                 } else {
                     Log.v("error", e.getMessage());
                 }
+
+                if(0 == mList.size()){
+                    Toast.makeText(getActivity(),"并没有啊",Toast.LENGTH_SHORT);
+                }
+                Log.v("size",String.valueOf(mList.size()));
                 homeAdapter.notifyDataSetChanged();
             }
         };

@@ -88,15 +88,6 @@
                     android:layout_weight="1"
                     android:src="@drawable/icon_favorite_normal" />
 
-                <TextView
-                    android:id="@+id/collect_num"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="100"
-                    android:textColor="@color/textColor"
-                    android:textSize="10sp" />
             </LinearLayout>
         </RelativeLayout>
 

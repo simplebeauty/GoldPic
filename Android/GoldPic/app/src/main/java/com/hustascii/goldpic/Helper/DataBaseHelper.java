@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.hustascii.goldpic.beans.CollectList;
+import com.hustascii.goldpic.beans.LikeList;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
@@ -20,6 +21,7 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper{
     private static final String DB_NAME = "GoldPic.db";
     private static final int DB_VSERSION = 1;
     private Dao<CollectList, Integer> collectListDao = null;
+    private Dao<LikeList,Integer> likeListDao = null;
     private Context mContext;
 
     public DataBaseHelper(Context context) {
@@ -31,7 +33,9 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper{
     public void onCreate(SQLiteDatabase arg0, ConnectionSource arg1) {
         try {
             TableUtils.createTable(connectionSource, CollectList.class);
+            TableUtils.createTable(connectionSource, LikeList.class);
             collectListDao = getCollectListDao();
+            likeListDao = getLikeListDao();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -47,6 +51,7 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper{
     public void close() {
         super.close();
         collectListDao = null;
+        likeListDao = null;
     }
 
     public Dao<CollectList, Integer> getCollectListDao()
@@ -56,6 +61,15 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper{
         }
         return collectListDao;
     }
+
+    public Dao<LikeList, Integer> getLikeListDao()
+            throws SQLException {
+        if (likeListDao == null) {
+            likeListDao = getDao(LikeList.class);
+        }
+        return likeListDao;
+    }
+
 
 
 }

@@ -15,11 +15,10 @@ import java.util.List;
 /**
  * Created by wei on 15/5/13.
  */
-public class CollectListDB {
-
+public class LikeListDB {
     private DataBaseHelper databaseHelper = null;
 
-    public CollectListDB(Context ctx) {
+    public LikeListDB(Context ctx) {
         // TODO Auto-generated constructor stub
         if (databaseHelper == null) {
             databaseHelper = OpenHelperManager.getHelper(ctx,
@@ -27,17 +26,17 @@ public class CollectListDB {
         }
     }
 
-    public void add(CollectList record) {
-        RuntimeExceptionDao<CollectList, Integer> dao = databaseHelper
-                .getRuntimeExceptionDao(CollectList.class);
+    public void add(LikeList record) {
+        RuntimeExceptionDao<LikeList, Integer> dao = databaseHelper
+                .getRuntimeExceptionDao(LikeList.class);
         if(!is_exist(record.getPic_id())){
             dao.create(record);
         }
     }
 
     public boolean is_exist(String pic_id){
-        RuntimeExceptionDao<CollectList, Integer> dao = databaseHelper
-                .getRuntimeExceptionDao(CollectList.class);
+        RuntimeExceptionDao<LikeList, Integer> dao = databaseHelper
+                .getRuntimeExceptionDao(LikeList.class);
         int num = 0;
         try {
             num = dao.queryBuilder().where().eq("pic_id",pic_id).query().size();
@@ -53,19 +52,19 @@ public class CollectListDB {
 
 
     public List<String> queryall() {
-        RuntimeExceptionDao<CollectList, Integer> dao = databaseHelper
-                .getRuntimeExceptionDao(CollectList.class);
-        List<CollectList> list = dao.queryForAll();
+        RuntimeExceptionDao<LikeList, Integer> dao = databaseHelper
+                .getRuntimeExceptionDao(LikeList.class);
+        List<LikeList> list = dao.queryForAll();
         List<String> s = new ArrayList<>();
-        for (CollectList pic:list){
+        for (LikeList pic:list){
             s.add(pic.getPic_id());
         }
         return s;
     }
 
-    public CollectList getLast() {
-        RuntimeExceptionDao<CollectList, Integer> dao = databaseHelper
-                .getRuntimeExceptionDao(CollectList.class);
+    public LikeList getLast() {
+        RuntimeExceptionDao<LikeList, Integer> dao = databaseHelper
+                .getRuntimeExceptionDao(LikeList.class);
         int size = dao.queryForAll().size();
         if (size == 0)
             return null;
@@ -77,10 +76,10 @@ public class CollectListDB {
 
     public void delete(String pic_id){
         if(is_exist(pic_id)){
-            RuntimeExceptionDao<CollectList, Integer> dao = databaseHelper
-                    .getRuntimeExceptionDao(CollectList.class);
+            RuntimeExceptionDao<LikeList, Integer> dao = databaseHelper
+                    .getRuntimeExceptionDao(LikeList.class);
             try{
-                DeleteBuilder<CollectList,Integer> delete = dao.deleteBuilder();
+                DeleteBuilder<LikeList,Integer> delete = dao.deleteBuilder();
                 delete.where().eq("pic_id",pic_id);
                 delete.delete();
             }catch (SQLException e){
