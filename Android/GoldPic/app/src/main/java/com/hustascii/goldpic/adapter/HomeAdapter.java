@@ -154,7 +154,7 @@ public class HomeAdapter extends BaseAdapter{
 
                         picture.setFetchWhenSave(true);
                         picture.increment("likeCount",-1);
-                       
+
                         picture.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(AVException e) {

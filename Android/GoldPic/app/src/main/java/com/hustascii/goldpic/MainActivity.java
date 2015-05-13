@@ -4,13 +4,13 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.graphics.AvoidXfermode;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -27,6 +27,7 @@ import com.hustascii.goldpic.fragments.HotPageFragment;
 import com.hustascii.goldpic.fragments.NewPageFragment;
 import com.hustascii.goldpic.fragments.PageFragment;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
+import com.ogaclejapan.smarttablayout.utils.v4.Bundler;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItem;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
@@ -55,6 +56,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private TypeAdapter typeAdapter;
     private ProgressDialog progressDialog;
     private FragmentPagerItemAdapter adapter;
+    private SmartTabLayout viewPagerTab;
 
     private ArrayList<AVObject> mList;
     private ArrayList<AVObject> contentType;
@@ -98,16 +100,20 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 R.string.drawer_open);
         mDrawerToggle.syncState();
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-        adapter = new FragmentPagerItemAdapter(
-                getSupportFragmentManager(), FragmentPagerItems.with(this)
-                .add(R.string.hot_page, HotPageFragment.class,new Bundle())
-                .add(R.string.new_page, NewPageFragment.class)
-                .add(R.string.collet_page, CollectPageFragment.class)
-                .create());
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setAdapter(adapter);
-        SmartTabLayout viewPagerTab = (SmartTabLayout) findViewById(R.id.viewpagertab);
-        viewPagerTab.setViewPager(viewPager);
+
+        viewPagerTab = (SmartTabLayout) findViewById(R.id.viewpagertab);
+        changePage(0,"电影院");
+//        adapter = new FragmentPagerItemAdapter(
+//                getSupportFragmentManager(), FragmentPagerItems.with(this)
+//                .add(R.string.hot_page, HotPageFragment.class,)
+//                .add(R.string.new_page, NewPageFragment.class)
+//                .add(R.string.collet_page, CollectPageFragment.class)
+//                .create());
+//        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+//        viewPager.setAdapter(adapter);
+//
+//        viewPagerTab = (SmartTabLayout) findViewById(R.id.viewpagertab);
+//        viewPagerTab.setViewPager(viewPager);
     }
 
     private void initDrawer(){
@@ -122,8 +128,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-               app.setType(mList.get((int)id));
-               app.setType_id(0);
+
+
+
+                mDrawerLayout.closeDrawers();
+               changePage(0,"店费");
 //              send();
 
             }
@@ -131,6 +140,22 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         getContentType();
     }
+
+
+    private void changePage(int type_id,String type){
+        Bundler bundler = new Bundler().putString("type", type).putInt("type_id",type_id);
+        adapter = new FragmentPagerItemAdapter(
+                getSupportFragmentManager(), FragmentPagerItems.with(this)
+                .add(R.string.hot_page, HotPageFragment.class,bundler.get())
+                .add(R.string.new_page, NewPageFragment.class,bundler.get())
+                .add(R.string.collet_page, CollectPageFragment.class,bundler.get())
+                .create());
+        ViewPager viewPager = (ViewPager)findViewById(R.id.viewpager);
+        viewPager.setAdapter(adapter);
+        viewPagerTab.setViewPager(viewPager);
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

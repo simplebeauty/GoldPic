@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,19 +43,40 @@ public abstract class PageFragment extends Fragment{
     protected ProgressDialog progressDialog;
     public FindCallback<Picture> getDataCallback;
     public AVQuery<Picture> query;
-    public AVObject type;
+    private String type;
+    private int type_id;
+
+    private SwipeRefreshLayout swipeRefreshLayout;
 
 
-    public PageFragment(){}
+    public PageFragment(){
+
+
+//        type_id = getArguments().getInt("type_id");
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mList = new ArrayList<Picture>();
+
+
+        if(getArguments().containsKey("type")){
+            type = getArguments().getString("type");
+
+        }
+        if(null != type){
+            Log.v("type:",type);
+        }
+
+
         homeAdapter = new HomeAdapter(getActivity(),mList);
         getDataCallback = new FindCallback<Picture>() {
             @Override
             public void done(List<Picture> results, AVException e) {
                 progressDialog.dismiss();
+                if(swipeRefreshLayout.isRefreshing()){
+                    swipeRefreshLayout.setRefreshing(false);
+                }
 
                 mList.clear();
                 if (e == null) {
@@ -83,6 +105,12 @@ public abstract class PageFragment extends Fragment{
         // Inflate the layout for this fragment
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_hot_page, null, false);
+
+        swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.activity_main_swipe_refresh_layout);
+
+
+
+
         mListView = (ListView) view.findViewById(R.id.piclist);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -94,6 +122,14 @@ public abstract class PageFragment extends Fragment{
 
         mListView.setAdapter(homeAdapter);
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                query = AVQuery.getQuery(Picture.class);
+                getData();
+                query.findInBackground(getDataCallback);
+            }
+        });
 
 
 
