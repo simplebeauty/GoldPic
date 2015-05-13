@@ -30,7 +30,7 @@ public class Picture extends AVObject {
         return this.getAVFile(PIC_KEY);
     }
 
-    public void setPic_url(AVFile file) {
+    public void setPic(AVFile file) {
         this.put(PIC_KEY,file);
     }
 

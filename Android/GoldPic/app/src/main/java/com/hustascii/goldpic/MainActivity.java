@@ -1,6 +1,9 @@
 package com.hustascii.goldpic;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Intent;
+import android.graphics.AvoidXfermode;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -18,9 +21,11 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
+import com.hustascii.goldpic.adapter.TypeAdapter;
 import com.hustascii.goldpic.fragments.CollectPageFragment;
 import com.hustascii.goldpic.fragments.HotPageFragment;
 import com.hustascii.goldpic.fragments.NewPageFragment;
+import com.hustascii.goldpic.fragments.PageFragment;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItem;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
@@ -28,12 +33,14 @@ import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Switch;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -45,13 +52,15 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private Button contentTypeBtn;
     private Button emotionTypeBtn;
     private ListView typeList;
-    private ArrayAdapter<String> typeAdapter;
+    private TypeAdapter typeAdapter;
     private ProgressDialog progressDialog;
+    private FragmentPagerItemAdapter adapter;
 
+    private ArrayList<AVObject> mList;
+    private ArrayList<AVObject> contentType;
+    private ArrayList<AVObject> emotionType;
+    private MyApp app;
 
-    private ArrayList<String> mList;
-    private ArrayList<String> contentType;
-    private ArrayList<String> emotionType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,13 +77,19 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		/* findView */
-        mList = new ArrayList<String>();
-        contentType = new ArrayList<String>();
-        emotionType = new ArrayList<String>();
+        mList = new ArrayList<AVObject>();
+        contentType = new ArrayList<AVObject>();
+        emotionType = new ArrayList<AVObject>();
 
-        typeAdapter = new ArrayAdapter<String>(this,R.layout.type_item,R.id.type_text,mList);
-        initPages();
+        app = (MyApp)getApplication();
+
+        typeAdapter = new TypeAdapter(this,mList);
         initDrawer();
+
+        initPages();
+
+
+
     }
 
     private void initPages(){
@@ -83,11 +98,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 R.string.drawer_open);
         mDrawerToggle.syncState();
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-        FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(
+        adapter = new FragmentPagerItemAdapter(
                 getSupportFragmentManager(), FragmentPagerItems.with(this)
-                .add(R.string.hot_page, HotPageFragment.class)
-                .add(R.string.new_page, HotPageFragment.class)
-                .add(R.string.collet_page, HotPageFragment.class)
+                .add(R.string.hot_page, HotPageFragment.class,new Bundle())
+                .add(R.string.new_page, NewPageFragment.class)
+                .add(R.string.collet_page, CollectPageFragment.class)
                 .create());
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(adapter);
@@ -102,6 +117,18 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         emotionTypeBtn.setOnClickListener(this);
         typeList = (ListView)findViewById(R.id.list_type);
         typeList.setAdapter(typeAdapter);
+
+        typeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+               app.setType(mList.get((int)id));
+               app.setType_id(0);
+//              send();
+
+            }
+        });
+
         getContentType();
     }
 
@@ -130,15 +157,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> avObjects, AVException e) {
-
+                app.setType_id(0);
                 progressDialog.dismiss();
                 mList.clear();
                 contentType.clear();
                 if(e == null){
-                    for(AVObject object:avObjects){
-                        contentType.add(object.getString("name"));
-                        mList.add(object.getString("name"));
-                    }
+                    contentType.addAll(avObjects);
+                    mList.addAll(contentType);
                 }else{
                     Log.v("failed", "error:" + e.getMessage());
                 }
@@ -152,16 +177,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> avObjects, AVException e) {
-
+                app.setType_id(1);
                 progressDialog.dismiss();
                 mList.clear();
                 emotionType.clear();
                 if(e == null){
-                    for(AVObject object:avObjects){
-                        emotionType.add(object.getString("name"));
-
-                        mList.add(object.getString("name"));
-                    }
+                    emotionType.addAll(avObjects);
+                    mList.addAll(emotionType);
                 }else{
                     Log.v("failed", "error:" + e.getMessage());
                 }
@@ -175,15 +197,18 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public void onClick(View view) {
         switch(view.getId()){
             case R.id.content_type_btn:
+                app.setType_id(0);
                 if(contentType.isEmpty()){
                    getContentType();
                 }else{
                     mList.clear();
                     mList.addAll(contentType);
+
                     typeAdapter.notifyDataSetChanged();
                 }
                 break;
             case R.id.emotion_type_btn:
+                app.setType_id(1);
                 if(emotionType.isEmpty()){
                     getEmotionType();
                 }else{
@@ -193,5 +218,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 }
                 break;
         }
+    }
+
+
+    public void send() {
+        Intent intent = new Intent("android.intent.action.ACTION_TYPE");
+//        intent.putExtra("msg", "hello receiver.");
+        sendBroadcast(intent);
     }
 }

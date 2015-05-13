@@ -2,6 +2,9 @@ package com.hustascii.goldpic.fragments;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,9 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.avos.avoscloud.AVCloudQueryResult;
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.CloudQueryCallback;
 import com.avos.avoscloud.FindCallback;
+import com.hustascii.goldpic.MyApp;
 import com.hustascii.goldpic.R;
 import com.hustascii.goldpic.adapter.HomeAdapter;
 import com.hustascii.goldpic.beans.Picture;
@@ -21,35 +28,43 @@ import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by wei on 15-5-7.
  */
 public abstract class PageFragment extends Fragment{
-    private ListView mListView;
-    private HomeAdapter homeAdapter;
-    private ArrayList<Picture> mList;
+    protected ListView mListView;
+    protected HomeAdapter homeAdapter;
+    protected ArrayList<Picture> mList;
     private ImageLoader mImageLoader;
-    private ProgressDialog progressDialog;
+    protected ProgressDialog progressDialog;
     public FindCallback<Picture> getDataCallback;
     public AVQuery<Picture> query;
+    public AVObject type;
 
+
+    public PageFragment(){}
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mList = new ArrayList<Picture>();
+        homeAdapter = new HomeAdapter(getActivity(),mList);
         getDataCallback = new FindCallback<Picture>() {
             @Override
-            public void done(List<Picture> pictures, AVException e) {
+            public void done(List<Picture> results, AVException e) {
                 progressDialog.dismiss();
+
+                mList.clear();
                 if (e == null) {
-                    mList.addAll(pictures);
+                    mList.addAll(results);
                 } else {
                     Log.v("error", e.getMessage());
                 }
                 homeAdapter.notifyDataSetChanged();
             }
         };
+
 
     }
 
@@ -71,9 +86,9 @@ public abstract class PageFragment extends Fragment{
         mImageLoader = ImageLoader.getInstance();
         mListView.setOnScrollListener(new PauseOnScrollListener(mImageLoader, false, false));
 
-        homeAdapter = new HomeAdapter(getActivity(), mList);
-
         mListView.setAdapter(homeAdapter);
+
+
 
 
 
@@ -96,5 +111,29 @@ public abstract class PageFragment extends Fragment{
         super.onDetach();
     }
 
-    public void getData(){}
+    public abstract void getData();
+
+
+
+    public static class TypeBroadcastReceiver extends BroadcastReceiver{
+        private static final String TAG = "TypeBroadCast";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            MyApp app = (MyApp)context.getApplicationContext();
+
+            AVObject type = app.getType();
+            int type_id = app.getType_id();
+            AVQuery<Picture> query = AVQuery.getQuery(Picture.class);
+
+            if(type_id == 0){
+                query.whereEqualTo("ContentType",type);
+            }else{
+                query.whereEqualTo("EmotionType",type);
+            }
+//            getData();
+//            query.findInBackground(getDataCallback);
+        }
+    }
+
 }

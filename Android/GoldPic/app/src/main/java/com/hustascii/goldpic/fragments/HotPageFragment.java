@@ -37,7 +37,6 @@ public class HotPageFragment extends PageFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
 
@@ -47,9 +46,8 @@ public class HotPageFragment extends PageFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_hot_page, null, false);
-        return view;
+        return super.onCreateView(inflater, container, savedInstanceState);
+
     }
 
 
@@ -66,7 +64,7 @@ public class HotPageFragment extends PageFragment {
 
     @Override
     public void getData(){
-        query.orderByDescending("likeCount");
+        query.orderByDescending("likeCounts");
     }
 
 }

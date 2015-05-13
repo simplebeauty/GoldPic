@@ -12,9 +12,16 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVFile;
+import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.SaveCallback;
 import com.hustascii.goldpic.R;
+import com.hustascii.goldpic.beans.CollectList;
+import com.hustascii.goldpic.beans.CollectListDB;
 import com.hustascii.goldpic.beans.Picture;
 import com.hustascii.goldpic.util.AnimateFirstDisplayListener;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -23,7 +30,10 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Created by wei on 15-4-28.
@@ -88,26 +98,26 @@ public class HomeAdapter extends BaseAdapter{
     public View getView(int i, View view, ViewGroup viewGroup) {
 
         final ViewHolder viewHolder;
+
+        final AVObject picture = mList.get(i);
+
+        final CollectListDB db = new CollectListDB(mContext);
         if(view == null){
             view = mInflater.inflate(R.layout.pic_item,null);
             viewHolder = new ViewHolder();
             viewHolder.mImg = (ImageView)view.findViewById(R.id.list_img);
             viewHolder.likeImg = (ImageView)view.findViewById(R.id.like_img);
             viewHolder.collectImg = (ImageView)view.findViewById(R.id.collect_img);
-
             viewHolder.likeBtn = (RelativeLayout)view.findViewById(R.id.like_btn);
             viewHolder.collectBtn = (RelativeLayout)view.findViewById(R.id.collect_btn);
             viewHolder.shareBtn = (RelativeLayout)view.findViewById(R.id.share_btn);
+            viewHolder.likeCountText = (TextView)view.findViewById(R.id.like_num);
+            viewHolder.likeCountText.setText(String.valueOf(picture.getInt("likeCount")));
 
-
-            final Picture picture = mList.get(i);
-
-
-
-
-
-
-
+            Log.v("ObjectId:",picture.getObjectId());
+            if(db.is_exist(picture.getObjectId())){
+                viewHolder.collectImg.setImageResource(R.drawable.icon_favorite_selected);
+            }
 
 
             viewHolder.likeBtn.setOnClickListener(new View.OnClickListener() {
@@ -115,13 +125,36 @@ public class HomeAdapter extends BaseAdapter{
                 public void onClick(View view) {
 
                     viewHolder.likeImg.setImageResource(R.drawable.icon_like_selected);
+                    picture.setFetchWhenSave(true);
+                    picture.increment("likeCount");
+                    picture.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(AVException e) {
+                            if(e == null){
+                                viewHolder.likeCountText.setText(String.valueOf(picture.getInt("likeCount")));
+                            }else{
+                                Toast.makeText(mContext,"点赞失败",Toast.LENGTH_LONG);
+                            }
+                        }
+                    });
                 }
             });
 
             viewHolder.collectBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    viewHolder.collectImg.setImageResource(R.drawable.icon_favorite_selected);
+                    if(db.is_exist(picture.getObjectId())) {
+                        viewHolder.collectImg.setImageResource(R.drawable.icon_favorite_normal);
+                        db.delete(picture.getObjectId());
+                        Toast.makeText(mContext,"取消成功",Toast.LENGTH_SHORT).show();
+                    }else{
+                        viewHolder.collectImg.setImageResource(R.drawable.icon_favorite_selected);
+                        CollectList pic = new CollectList();
+                        pic.setPic_id(picture.getObjectId());
+                        db.add(pic);
+                        Toast.makeText(mContext,"收藏成功",Toast.LENGTH_SHORT).show();
+
+                    }
                 }
             });
 
@@ -136,15 +169,16 @@ public class HomeAdapter extends BaseAdapter{
             viewHolder = (ViewHolder)view.getTag();
         }
 
-
+        AVFile pic = picture.getAVFile("picFile");
+        String imgUrl = pic.getUrl();
         if(!mBusy){
             if(viewHolder.mImg!=null) {
 
                 mImageLoader
-                        .displayImage("http://edu.china.unity3d.com/uploads/assets/image/20141114/20141114173828_74628.jpg", viewHolder.mImg, options, new AnimateFirstDisplayListener());
+                        .displayImage(imgUrl, viewHolder.mImg, options, new AnimateFirstDisplayListener());
             }
         }else{
-            mImageLoader.displayImage("http://yuedu.fm/static/file/large/4c2e43a1db5fd89a2563eba7249ebc54",viewHolder.mImg,options);
+            mImageLoader.displayImage(imgUrl,viewHolder.mImg,options);
         }
         return view;
     }

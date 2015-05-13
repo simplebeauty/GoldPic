@@ -23,6 +23,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name="com.hustascii.goldpic.fragments.PageFragment$TypeBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_TYPE"></action>
+                <category android:name="android.intent.category.DEFAULT"></category>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -2,6 +2,7 @@ package com.hustascii.goldpic;
 
 import android.app.Application;
 
+import com.avos.avoscloud.AVObject;
 import com.hustascii.goldpic.util.AVService;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -13,8 +14,33 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
  */
 public class MyApp extends Application{
 
+    private AVObject type;
+    private int type_id;
+
+    public AVObject getType(){
+        return this.type;
+    }
+
+    public void setType(AVObject type){
+        this.type = type;
+    }
+
+    public int getType_id(){
+        return this.type_id;
+    }
+
+    public void setType_id(int type_id){
+        this.type_id = type_id;
+    }
+
+
     @Override
     public void onCreate() {
+
+
+
+
+
         super.onCreate();
 
         // This configuration tuning is custom. You can tune every option, you may tune some of them,

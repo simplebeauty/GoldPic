@@ -4,11 +4,18 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.FindCallback;
 import com.hustascii.goldpic.R;
+import com.hustascii.goldpic.beans.Picture;
+
+import java.util.List;
 
 
 public class NewPageFragment extends PageFragment {
@@ -20,7 +27,6 @@ public class NewPageFragment extends PageFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
 
@@ -47,7 +53,9 @@ public class NewPageFragment extends PageFragment {
 
     @Override
     public void getData(){
+
         query.orderByDescending("createdAt");
+
     }
 
 }
