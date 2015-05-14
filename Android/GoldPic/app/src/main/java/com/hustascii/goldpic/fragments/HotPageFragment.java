@@ -39,9 +39,6 @@ public class HotPageFragment extends PageFragment {
         super.onCreate(savedInstanceState);
     }
 
-
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

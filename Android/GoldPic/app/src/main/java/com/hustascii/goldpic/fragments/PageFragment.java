@@ -49,17 +49,11 @@ public abstract class PageFragment extends Fragment{
     private SwipeRefreshLayout swipeRefreshLayout;
 
 
-    public PageFragment(){
-
-
-//        type_id = getArguments().getInt("type_id");
-    }
+    public PageFragment(){}
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mList = new ArrayList<Picture>();
-
-
         if(getArguments().containsKey("type")){
             type = getArguments().getString("type");
 
@@ -92,11 +86,7 @@ public abstract class PageFragment extends Fragment{
                 homeAdapter.notifyDataSetChanged();
             }
         };
-
-
     }
-
-
 
 
     @Override
@@ -107,10 +97,6 @@ public abstract class PageFragment extends Fragment{
         View view = inflater.inflate(R.layout.fragment_hot_page, null, false);
 
         swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.activity_main_swipe_refresh_layout);
-
-
-
-
         mListView = (ListView) view.findViewById(R.id.piclist);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -119,9 +105,7 @@ public abstract class PageFragment extends Fragment{
 
         mImageLoader = ImageLoader.getInstance();
         mListView.setOnScrollListener(new PauseOnScrollListener(mImageLoader, false, false));
-
         mListView.setAdapter(homeAdapter);
-
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -130,17 +114,13 @@ public abstract class PageFragment extends Fragment{
                 query.findInBackground(getDataCallback);
             }
         });
-
-
-
-
         query = AVQuery.getQuery(Picture.class);
         getData();
         query.findInBackground(getDataCallback);
-
-
         return view;
     }
+
+    public void change(int type_id,String type){}
 
 
     @Override
@@ -163,16 +143,13 @@ public abstract class PageFragment extends Fragment{
         @Override
         public void onReceive(Context context, Intent intent) {
             MyApp app = (MyApp)context.getApplicationContext();
-
-            AVObject type = app.getType();
-            int type_id = app.getType_id();
             AVQuery<Picture> query = AVQuery.getQuery(Picture.class);
 
-            if(type_id == 0){
-                query.whereEqualTo("ContentType",type);
-            }else{
-                query.whereEqualTo("EmotionType",type);
-            }
+//            if(type_id == 0){
+//                query.whereEqualTo("ContentType",type);
+//            }else{
+//                query.whereEqualTo("EmotionType",type);
+//            }
 //            getData();
 //            query.findInBackground(getDataCallback);
         }

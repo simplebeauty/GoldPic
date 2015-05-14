@@ -29,13 +29,10 @@ import java.util.List;
 
 public class CollectPageFragment extends PageFragment {
 
-
-
     @Override
     public void getData() {
         CollectListDB db = new CollectListDB(getActivity());
         List<String> list = db.queryall();
-
         query.whereContainedIn("objectId",list);
         db.releaseDataHelper();
 

@@ -18,7 +18,7 @@ android {
         }
     }
 
-    packagingOptions{
+    packagingOptions {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
     }
@@ -29,18 +29,18 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:22.1.1'
-    compile 'com.ogaclejapan.smarttablayout:library:1.1.2@aar'
     //    compile 'it.neokree:MaterialTabs:0.11'
     //Optional: see how to use the utility.
-    compile 'com.ogaclejapan.smarttablayout:utils-v4:1.1.2@aar'
     //
     //    //Optional: see how to use the utility.
     //    compile 'com.ogaclejapan.smarttablayout:utils-v13:1.1.2@aar'
     compile files('libs/universal-image-loader-1.9.3.jar')
-    compile 'com.android.support:support-v4:22.0.3'
     //avoscloud-sdk 为 LeanCloud基础包
-    compile 'cn.leancloud.android:avoscloud-sdk:v2.7+'
     compile files('libs/ormlite-android-4.48.jar')
     compile files('libs/ormlite-core-4.48.jar')
+    compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.ogaclejapan.smarttablayout:library:1.1.2@aar'
+    compile 'com.ogaclejapan.smarttablayout:utils-v4:1.1.2@aar'
+    compile 'com.android.support:support-v4:22.1.1'
+    compile 'cn.leancloud.android:avoscloud-sdk:v3.1+'
 }
